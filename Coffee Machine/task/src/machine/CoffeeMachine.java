@@ -15,6 +15,7 @@ public class CoffeeMachine {
     }
 
     private void printInventory() {
+        System.out.println("The coffee machine has:");
         System.out.println(water + " of water");
         System.out.println(milk + " of milk");
         System.out.println(coffeeBeans + " of coffee beans");
@@ -42,7 +43,27 @@ public class CoffeeMachine {
             money += 6;
         }
         disposableCups--;
-        printInventory();
+    }
+
+    private boolean checkInventory(int coffeeType) {
+
+        if (coffeeType == 1) {
+            if (water - 250 >= 0 && coffeeBeans - 16 >= 0 && disposableCups > 0) {
+                return true;
+            }
+        }
+        else if (coffeeType == 2) {
+            if (water - 350 >= 0 && milk - 75 >= 0 && coffeeBeans - 20 >= 0 && disposableCups > 0) {
+                return true;
+            }
+        }
+        else if (coffeeType == 3) {
+            if (water - 200 >= 0 && milk - 100 >= 0 && coffeeBeans - 12 >= 0 && disposableCups > 0) {
+                return true;
+            }
+        }
+        System.out.println("Sorry, not enough ingredients!");
+        return false;
     }
 
     public static void main(String[] args) {
@@ -50,39 +71,54 @@ public class CoffeeMachine {
 
         CoffeeMachine coffeeMachine = new CoffeeMachine();
 
-        System.out.println("The coffee machine has:");
-        coffeeMachine.printInventory();
+        boolean keepOperating = true;
 
-        System.out.println("Write action (buy, fill, take):");
-        String choice = scanner.next();
-
-        switch (choice) {
-            case "buy":
-                System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:");
-                int coffeeType = scanner.nextInt();
-                coffeeMachine.depleteIngredients(coffeeType);
-                break;
-            case "fill":
-                System.out.println("Write how many ml of water do you want to add:");
-                coffeeMachine.water += scanner.nextInt();
-                System.out.println("Write how many ml of milk do you want to add:");
-                coffeeMachine.milk += scanner.nextInt();
-                System.out.println("Write how many grams of coffee beans do you want to add:");
-                coffeeMachine.coffeeBeans += scanner.nextInt();
-                System.out.println("Write how many disposable cups of coffee do you want to add:");
-                coffeeMachine.disposableCups += scanner.nextInt();
-                coffeeMachine.printInventory();
-                break;
-            case "take":
-                System.out.println("I gave you $" + coffeeMachine.money);
-                coffeeMachine.money = 0;
-                coffeeMachine.printInventory();
-            default:
-                System.out.print("There was something wrong with your choice..");
+        do {
+            System.out.println("Write action (buy, fill, take, remaining, exit):");
+            String choice = scanner.next();
+            String coffeeType;
+            switch (choice) {
+                case "buy":
+                    System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino," +
+                            " back - to main menu:");
+                    coffeeType = scanner.next();
+                    if (!coffeeType.equals("back") && coffeeMachine.checkInventory(Integer.parseInt(coffeeType))) {
+                        System.out.println("I have enough resources, making you a coffee!");
+                        coffeeMachine.depleteIngredients(Integer.parseInt(coffeeType));
+                        break;
+                    }
+                    break;
+                case "fill":
+                    System.out.println("Write how many ml of water do you want to add:");
+                    coffeeMachine.water += scanner.nextInt();
+                    System.out.println("Write how many ml of milk do you want to add:");
+                    coffeeMachine.milk += scanner.nextInt();
+                    System.out.println("Write how many grams of coffee beans do you want to add:");
+                    coffeeMachine.coffeeBeans += scanner.nextInt();
+                    System.out.println("Write how many disposable cups of coffee do you want to add:");
+                    coffeeMachine.disposableCups += scanner.nextInt();
+                    break;
+                case "take":
+                    System.out.println("I gave you $" + coffeeMachine.money);
+                    coffeeMachine.money = 0;
+                    break;
+                case "remaining":
+                    coffeeMachine.printInventory();
+                    break;
+                case "exit":
+                    keepOperating = false;
+                    break;
+                default:
+                    System.out.print("There was something wrong with your choice..");
+                    break;
+            }
         }
+        while (keepOperating);
     }
 
-    private static void checkInventory(int water, int milk, int coffeeBeans, int cups) {
+
+
+    /*private static void checkInventory(int water, int milk, int coffeeBeans, int cups) {
 
         int amountOfCups = 0;
 
@@ -106,7 +142,7 @@ public class CoffeeMachine {
         else {
             System.out.println("No, I can make only " + amountOfCups + " cup(s) of coffee");
         }
-    }
+    }*/
 
     private static void countIngredients(int cups) {
 
